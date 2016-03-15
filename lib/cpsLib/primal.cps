@@ -25,8 +25,8 @@ importer, calculated directly in here via the property value definition.
 
 ### Expected Properties
 
-Properties used by the standard renderer. These properties are the ones
-consumed outside of the CPS by the basic rendering process.
+Properties used by the standard renderer (renderers/basic). These properties
+are the ones consumed outside of the CPS by the basic rendering process.
 
 Custom rendering code can consume other properties, but the documentation
 of these is not the scope of this document.
@@ -133,14 +133,11 @@ The terminals of a <penstroke> require some special rules.
 
 center {
 /*#md
-## Expected Properties
-
- * **on**: Vector, absolute coordinate of the on-curve-point. *mandatory!*
- * **in**: Vector, absolute coordinate of the incoming off-curve-point. *mandatory!*
- * **out**: Vector, absolute coordinate of the outgoing off-curve-point. *mandatory!*
-
 ## Commonly Used Properties
 
+ * **on**: Vector, absolute coordinate of the on-curve-point.
+ * **in**: Vector, absolute coordinate of the incoming off-curve-point.
+ * **out**: Vector, absolute coordinate of the outgoing off-curve-point.
  * **inLength**: Number, distance of incoming off-curve-point to its on-curve-point.
  * **outLength**: Number, distance of outgoing off-curve-point to its on-curve-point.
  * **inDir**: Number, angle in radians, direction from on-curve-point to incoming off-curve-point.
@@ -175,6 +172,8 @@ left, right {
  * **outDir**: Number, angle in radians, direction from on-curve-point to outgoing off-curve-point.
  * **inDirIntrinsic**, Number, angle in radians, offset from the parent <center> point inDir property.
  * **outDirIntrinsic**, Number, angle in radians, offset from the parent <center> point outDir property.
+ * **onLength**, Number, distance of <center> on-curve-point to <left/right> on-curve-point.
+ * **onDir**, Number, angle in radians, direction from <center> on-curve-point to <left/right> on-curve-point.
  * **inTension**: Number, Hobby-spline tension, distance of incoming off-curve-point to its on-curve-point.
  * **outTension**: Number, Hobby-spline tension, distance of outgoing off-curve-point to its on-curve-point.
  * **pointBefore**: MOM-Node, reference to the parent-<center>-points previous sibling <left/right> child.
