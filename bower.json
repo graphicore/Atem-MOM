@@ -1,0 +1,34 @@
+{
+  "name": "Atem-MOM",
+  "version": "0.0.0",
+  "homepage": "https://github.com/graphicore/Atem-MOM",
+  "authors": [
+    "Lasse Fister <commander@graphicore.de>"
+  ],
+  "description": "Atem Project: MOM—Metapolator Object Model",
+  "moduleType": [
+    "amd"
+  ],
+  "keywords": [
+    "font",
+    "Metapolator",
+    "Atem"
+  ],
+  "license": "GPLv3",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "lib/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "Atem-Errors": "graphicore/Atem-Errors",
+    "Atem-Math-Tools": "graphicore/Atem-Math-Tools",
+    "Atem-CPS": "graphicore/Atem-CPS",
+    "ufoJS": "graphicore/ufoJS",
+    "obtainjs": "graphicore/obtainJS",
+    "opentype.js": "~0.6.2"
+  }
+}
