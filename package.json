@@ -1,0 +1,30 @@
+{
+  "name": "atem-mom",
+  "version": "0.0.0",
+  "description": "Atem Project: MOM—Metapolator Object Model",
+  "main": "''",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/graphicore/Atem-MOM.git"
+  },
+  "keywords": [
+    "Atem",
+    "Metapolator",
+    "CPS"
+  ],
+  "author": "",
+  "license": "GPL-3.0+",
+  "bugs": {
+    "url": "https://github.com/graphicore/Atem-MOM/issues"
+  },
+  "homepage": "https://github.com/graphicore/Atem-MOM",
+  "dependencies": {
+    "commander": "git://github.com/graphicore/commander.js.git#atem-integration",
+    "helmsman": "^1.0.3",
+    "lie": "^3.0.2",
+    "requirejs": "^2.2.0"
+  }
+}
