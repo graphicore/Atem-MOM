@@ -1,0 +1,91 @@
+#!/usr/bin/env node
+
+exports.command = {
+    description: 'Import a UFO into MOM and dump the MOM-tree as YAML or JSON'
+  , arguments: '<ufo>'
+};
+
+
+if (require.main === module) {
+
+var require = require('requirejs')
+  , configure = require('node-config')
+  , path = require('path')
+  , program = require('commander')
+  ;
+
+configure(require);
+
+program._name = path.basename(process.argv[1]).replace('-', ' ');
+program.arguments(exports.command.arguments)
+    .description(exports.command.description);
+
+require([
+    'Atem-IO/io/static'
+  , 'Atem-Logging/Logger'
+  , 'Atem-Logging/Level'
+  , 'Atem-Logging/ConsoleHandler'
+  , 'ufojs/ufoLib/UFOReader'
+  , 'Atem-MOM/import/UFOImporter'
+  , 'yaml'
+
+  ], function(io, Logger, Level, Handler, UFOReader, UFOImporter, yaml) {
+
+    // TODO: UFOImporter has a lot of useful options, some of them should
+    //       be exposed here, if useful.
+    program.action(function(sourceUFO) {
+        var logger = new Logger()
+          , ufoReader = UFOReader.factory(false, io, sourceUFO)
+          , options = {masterName: program.name}
+          , importer = UFOImporter.factory(false, logger, ufoReader, options)
+          , master
+          , dumps
+          ;
+
+        logger.setLevel(program.log || Level.WARNING);
+        logger.addHandler(new Handler());
+        master = importer.import(program.glyphs);
+
+        if(program.serialization === 'JSON')
+            dumps = JSON.stringify;
+        else
+            dumps = yaml.safeDump;
+        console.log(dumps(master.dumpTree()));
+    }).option('-l, --log <log>', 'Log level default: WARNING, one of: ' +
+              Object.keys(Level)
+                    .filter(function(name){ return name.toUpperCase() === name;})
+                    .join(', '),
+        function(value) {
+            var name = value.toUpperCase();
+            if(!(name in Level))
+                throw new Error('Loglevel "'+value+'" is unknown.');
+            return Level[name];
+    }).option('-n, --name <name>', 'The name/id of the master',
+        function(value) {
+            // Add validation if necessary
+            return value || null;
+    }).option('-s, --serialization <serialization>'
+                , 'The serialziation format YAML or JSON default: YAML',
+        function(value) {
+            var format = value.toUpperCase();
+            if(!(format in {'YAML':1, 'JSON':1}))
+                throw new Error('Serialization format "'+ value +'" is unknown.');
+            return format;
+    }).option('-g, --glyphs <glyphs>', 'A comma-separated of glyph names to import',
+        function(value) {
+            var glyphNames = value.split(',')
+                           .map(function(item){ return item.trim(); })
+                           .filter(function(item){ return !!item.length; });
+
+            if(!glyphNames.length)
+                throw new Error('The value of option "glyphs" '
+                           + 'did not produce a list of names, value was: "'
+                           + value + '" expected was a comma separated list '
+                           + 'of glyph names');
+            return glyphNames;
+    });
+    program.parse(process.argv);
+});
+
+
+}
