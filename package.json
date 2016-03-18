@@ -25,6 +25,8 @@
     "commander": "git://github.com/graphicore/commander.js.git#atem-integration",
     "helmsman": "^1.0.3",
     "lie": "^3.0.2",
-    "requirejs": "^2.2.0"
+    "requirejs": "^2.2.0",
+    "jsdom": "~3",
+    "libxmljs": "~0.15.0"
   }
 }
