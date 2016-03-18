@@ -27,10 +27,11 @@
     "Atem-Errors": "graphicore/Atem-Errors",
     "Atem-Math-Tools": "graphicore/Atem-Math-Tools",
     "Atem-CPS": "graphicore/Atem-CPS",
-    "ufoJS": "graphicore/ufoJS",
+    "ufoJS": "graphicore/ufoJS#UFOReader_Writer",
     "obtainjs": "graphicore/obtainJS",
     "opentype.js": "~0.6.2",
     "Atem-RequireJS-Config": "graphicore/Atem-RequireJS-Config",
-    "Atem-Logging": "graphicore/Atem-Logging"
+    "Atem-Logging": "graphicore/Atem-Logging",
+    "Atem-Property-Language": "graphicore/Atem-Property-Language"
   }
 }
