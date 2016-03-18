@@ -29,6 +29,8 @@
     "Atem-CPS": "graphicore/Atem-CPS",
     "ufoJS": "graphicore/ufoJS",
     "obtainjs": "graphicore/obtainJS",
-    "opentype.js": "~0.6.2"
+    "opentype.js": "~0.6.2",
+    "Atem-RequireJS-Config": "graphicore/Atem-RequireJS-Config",
+    "Atem-Logging": "graphicore/Atem-Logging"
   }
 }
