@@ -112,6 +112,14 @@ contour > p {
     pointAfter: parent:children[index+1];
 }
 
+contour > p:i(0) {
+    pointBefore: parent:children[parent:children:length - 1];
+}
+
+contour > p:i(-1) {
+    pointAfter: parent:children[0];
+}
+
 penstroke {
 /*#md
 A <penstroke> represents a glyph contour by defining a "centerline" via
