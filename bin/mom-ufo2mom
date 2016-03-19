@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+"use strict";
+
+/*globals process:true, exports:true, module:true, console:true*/
 exports.command = {
     description: 'Import a UFO into MOM and dump the MOM-tree as YAML or JSON'
   , arguments: '<ufo>'
@@ -36,22 +39,23 @@ require([
     program.action(function(sourceUFO) {
         var logger = new Logger()
           , ufoReader = UFOReader.factory(false, io, sourceUFO)
-          , options = {masterName: program.name}
+          , options = {masterName: program.id}
           , importer = UFOImporter.factory(false, logger, ufoReader, options)
-          , master
+          , master, data
           , dumps
           ;
 
-        logger.setLevel(program.log || Level.WARNING);
+        logger.setLevel(program.loglevel || Level.WARNING);
         logger.addHandler(new Handler());
-        master = importer.import(program.glyphs);
+        master = importer.doImport(program.glyphs);
 
         if(program.serialization === 'JSON')
             dumps = JSON.stringify;
         else
             dumps = yaml.safeDump;
-        console.log(dumps(master.dumpTree()));
-    }).option('-l, --log <log>', 'Log level default: WARNING, one of: ' +
+        data = master.dumpTree(program.simpleProperties);
+        console.log(dumps(data));
+    }).option('-l, --loglevel <loglevel>', 'Log level default: WARNING, one of: ' +
               Object.keys(Level)
                     .filter(function(name){ return name.toUpperCase() === name;})
                     .join(', '),
@@ -60,7 +64,7 @@ require([
             if(!(name in Level))
                 throw new Error('Loglevel "'+value+'" is unknown.');
             return Level[name];
-    }).option('-n, --name <name>', 'The name/id of the master',
+    }).option('-i, --id <id>', 'The name/id of the master',
         function(value) {
             // Add validation if necessary
             return value || null;
@@ -83,7 +87,9 @@ require([
                            + value + '" expected was a comma separated list '
                            + 'of glyph names');
             return glyphNames;
-    });
+    }).option('-S, --simple-properties', 'Serialize properties as '
+                            + 'a dict which is a bit easier to edit but looses '
+                            +'shadowed/inactive properties.');
     program.parse(process.argv);
 });
 
