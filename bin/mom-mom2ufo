@@ -1,0 +1,159 @@
+#!/usr/bin/env node
+
+exports.command = {
+    description: 'Export a <UFO> directory from a <MOM> file serialized as YAML or JSON. '
+               + 'Use a minus (-) to read <MOM> from stdin.'
+  , arguments: '<MOM> <UFO>'
+};
+
+
+if (require.main === module) {
+
+var requirejs = require('requirejs')
+  , configure = requirejs('node-config')
+  , path = require('path')
+  , program = require('commander')
+    // expect require.main.filename to be path/to/root/bin/<command>
+    // thus path/to/root is the root directory
+  , rootDir = path.dirname(__dirname)
+  ;
+
+configure(requirejs);
+
+program._name = path.basename(process.argv[1]).replace('-', ' ');
+program.arguments(exports.command.arguments)
+    .description(exports.command.description);
+
+requirejs([
+    'Atem-IO/io/static'
+  , 'Atem-IO/io/Mounting'
+  , 'Atem-Logging/Logger'
+  , 'Atem-Logging/Level'
+  , 'Atem-Logging/ConsoleHandler'
+  , 'yaml'
+  , 'ufojs/ufoLib/UFOWriter'
+  , 'Atem-CPS/_Controller'
+  , 'Atem-CPS/CPS/SelectorEngine'
+  , 'Atem-CPS/CPS/RuleController'
+  , 'Atem-MOM/export/UFOExporter.es6'
+  , 'Atem-MOM/cpsTools'
+  , 'Atem-MOM/MOM/Multivers'
+  , 'Atem-MOM/MOM/Univers'
+  , 'Atem-MOM/MOM/Master'
+], function(
+    io
+  , MountingIO
+  , Logger
+  , Level
+  , Handler
+  , yaml
+  , UFOWriter
+  , _Controller
+  , SelectorEngine
+  , RuleController
+  , UFOExporter
+  , cpsTools
+  , Multivers
+  , Univers
+  , Master
+) {
+
+    var Controller = (function(Parent) {
+        function Controller() {
+            Parent.apply(this, arguments);
+        }
+        var _p = Controller.prototype = Object.create(Parent.prototype);
+
+        _p.getCPSName = function(node) {
+            //jshint unused:vars
+            return 'MOM/primal.cps';
+        };
+
+        return Controller;
+    })(_Controller);
+
+
+    // to read from stdin
+    function collectData(chunk) {this.push(chunk);}
+    function receiveData(callback) {callback(this.join(''));}
+
+    function main(sourceMOM, targetUFO) {
+        var logger = new Logger()
+          , ufoWriter = UFOWriter.factory(false, io, targetUFO, program.ufoVersion)
+          , selectorEngine = new SelectorEngine()
+          , cpsIO = new MountingIO(io)
+          , ruleController, controller, univers
+          ;
+        // needs a minimal Controller
+        function rootNodeFactory(controller) {
+            var root = new Multivers(controller);
+            root.add(new Univers());
+            return root;
+        }
+
+        cpsIO.mount(io, 'cps/MOM', path.relative( process.cwd(), rootDir) + '/lib/cpsLib');
+        ruleController = new RuleController(cpsIO, 'cps', cpsTools.initializePropertyValue, selectorEngine);
+        controller = new Controller(ruleController, rootNodeFactory, selectorEngine);
+        univers = controller.rootNode.children[0];
+
+        logger.setLevel(program.loglevel || Level.WARNING);
+        logger.addHandler(new Handler());
+
+        function onData(serialization) {
+            var data = yaml.safeLoad(serialization)
+              , master = new Master()
+              , fontinfo
+              , exporter
+              ;
+            master.loadTree(data);
+            univers.add(master);
+            exporter = new UFOExporter(logger, ufoWriter, master, program.layerName, program.defaultLayer);
+            exporter.doExport(program.glyphs);
+            ufoWriter.writeLayerContents(false);
+            fontinfo = master.getAttachment('fontinfo');// || TODO: minimal fontinfo
+            if(fontinfo)
+               ufoWriter.writeInfo(false, fontinfo);
+
+        }
+
+        if(sourceMOM === '-') {
+            // read from stdin
+
+            var inputChunks = [];
+            process.stdin.setEncoding('utf8');
+            process.stdin.on('data', collectData.bind(inputChunks));
+            process.stdin.on('end',receiveData.bind(inputChunks, onData));
+        }
+        else
+            onData(io.readFile(false, sourceMOM));
+    }
+
+    program.action(main);
+    program.option('-l, --loglevel <loglevel>', 'Log level default: WARNING, one of: ' +
+              Object.keys(Level)
+                    .filter(function(name){ return name.toUpperCase() === name;})
+                    .join(', '),
+        function(value) {
+            var name = value.toUpperCase();
+            if(!(name in Level))
+                throw new Error('Loglevel "'+value+'" is unknown.');
+            return Level[name];
+    });
+    program.option('-g, --glyphs <glyphs>', 'A comma-separated of glyph names to export',
+        function(value) {
+            var glyphNames = value.split(',')
+                           .map(function(item){ return item.trim(); })
+                           .filter(function(item){ return !!item.length; });
+
+            if(!glyphNames.length)
+                throw new Error('The value of option "glyphs" '
+                           + 'did not produce a list of names, value was: "'
+                           + value + '" expected was a comma separated list '
+                           + 'of glyph names');
+            return glyphNames;
+    });
+    program.parse(process.argv);
+});
+
+
+}
