@@ -1,0 +1,58 @@
+#!/usr/bin/env node
+"use strict";
+
+exports.command = {
+    description: 'Initialise a new project called <NAME>'
+  , arguments: '<NAME>'
+};
+
+if (require.main === module) {
+require('rootpath')();
+
+var requirejs = require('requirejs')
+  , configure = requirejs('node-config')
+  , path = require('path')
+  , program = require('commander')
+    // expect require.main.filename to be path/to/root/bin/<command>
+    // thus path/to/root is the root directory
+  , rootDir = path.dirname(__dirname)
+  ;
+configure(requirejs);
+
+program._name = path.basename(process.argv[1]).replace('-', ' ');
+program.arguments(exports.command.arguments)
+    .description(exports.command.description);
+
+Error.stackTraceLimit = Infinity;
+requirejs([
+    'Atem-IO/io/static'
+  , 'Atem-MOM/project/Project'
+], function (
+    io
+  , Project
+) {
+    function main (name) {
+        // We should have a module or something to set this up.
+        // This is not yet the final way. Also, write protection
+        // is missing!
+        var cpsLibIoMounts = [
+            // add more of these configuration objects to include more
+            // libraries each object yields in a call to MountingIO.mount
+            // the keys correlate with the argument names of MountingIO
+            // however, Project does some augmentation.
+            {
+            //  io: io// not needed here, because it is the same io
+                mountPoint: 'lib/MOM' // we will need more flexibility here
+              , pathOffset: rootDir + '/lib/cpsLib'
+              , allowAboveRoot: false
+            }
+        ];
+
+        var project = new Project(io, name, undefined, cpsLibIoMounts);
+        project.init();
+    }
+    program.action(main);
+    program.parse(process.argv);
+});
+
+}
