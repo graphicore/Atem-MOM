@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 "use strict";
 
 /*globals process:true, exports:true, module:true, console:true*/

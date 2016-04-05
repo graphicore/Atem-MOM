@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+"use strict";
 
 exports.command = {
     description: 'Export a <UFO> directory from a <MOM> file serialized as YAML or JSON. '
