@@ -1,13 +1,15 @@
 define(['../lib/bower_components/Atem-RequireJS-Config/nodeConfig'],
 function(configure) {
     var path = require('path')
+      , rootDir = path.dirname(path.dirname(process.mainModule.filename))
       , setup = {
-            baseUrl: path.dirname(process.mainModule.filename) + '/../lib'
+            baseUrl: rootDir + '/lib'
           , bowerPrefix: 'bower_components'
           , paths: {
                 'Atem-MOM': './'
             }
         }
       ;
+    define('rootDir', rootDir);
     return configure.bind(null, setup);
 });
