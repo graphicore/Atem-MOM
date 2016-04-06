@@ -1,0 +1,48 @@
+#!/usr/bin/env node
+"use strict";
+
+exports.command = {
+    description: 'Import a UFO to a master'
+  , arguments: '<ufo> <[project]/master>'
+};
+if (require.main === module) {
+
+var requirejs = require('requirejs')
+  , configure = requirejs('./node-config')
+  , path = require('path')
+  , program = require('commander')
+  ;
+
+configure(requirejs);
+
+program._name = path.basename(process.argv[1]).replace('-', ' ');
+program.arguments(exports.command.arguments)
+    .description(exports.command.description);
+
+requirejs([
+    'Atem-MOM/errors'
+  , 'Atem-IO/io/static'
+  , 'Atem-MOM/cli/parseArgs'
+], function (
+    errors
+  , io
+  , parseArgs
+) {
+
+    function main(baseMaster, projectMaster) {
+        var pm = parseArgs.projectMaster(io, projectMaster)
+          , project = pm[0]
+          , masterName = pm[1]
+          ;
+
+        project.load();
+        project.createDerivedMaster(false, baseMaster, masterName, program.cps || "");
+        project.save();
+    }
+
+    program.action(main);
+    program.option('-c, --cps <cps>', 'A CPS string');
+    program.parse(process.argv);
+});
+
+}
