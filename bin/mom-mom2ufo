@@ -67,7 +67,7 @@ requirejs([
 
         _p.getCPSName = function(node) {
             //jshint unused:vars
-            return 'MOM/primal.cps';
+            return 'MOM/primary.cps';
         };
 
         return Controller;
