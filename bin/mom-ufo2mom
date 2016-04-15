@@ -46,7 +46,7 @@ require([
 
         logger.setLevel(program.loglevel || Level.WARNING);
         logger.addHandler(new Handler());
-        master = importer.doImport(program.glyphs);
+        master = importer.doImport(false, program.glyphs);
 
         if(program.serialization === 'JSON')
             dumps = JSON.stringify;
