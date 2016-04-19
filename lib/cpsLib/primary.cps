@@ -17,7 +17,7 @@ starting point to learn how the MOM is transformed into fonts.
 ## Property Descriptions
 
 Each CPS rule for a MOM Node in the following has a comment at the
-d top of it, documenting the known/used/common properties for it. This
+top of it, documenting the known/used/common properties for it. This
 is the reference for the concepts you will encounter there.
 
 Properties are either set element-by-element to element.properties by the
@@ -73,8 +73,8 @@ component {
 contour {
 /*#md
 
-A <contour> is like a commonly understood glyph contour. A flat list of
-control points <p>.
+A `<contour>` is like a commonly understood glyph contour. A flat list of
+control points `<p>`.
 
 ## Expected Properties
 
@@ -122,16 +122,16 @@ contour > p:i(-1) {
 
 penstroke {
 /*#md
-A <penstroke> represents a glyph contour by defining a "centerline" via
-a list of points <center> from each of which a <left> and a <right> point
+A `<penstroke>` represents a glyph contour by defining a "centerline" via
+a list of points `<center>` from each of which a `<left>` and a `<right>` point
 extrudes to form a two-dimensional shape.
 
 Each conventional contour with an even number of at least 4 on-curve points
 can be converted into a penstroke. However, to make it useful for further
 transformations it is important to organize the the source contour in
-pair-points along the "stroke-directon".
+pair-points along the "stroke-direction".
 
-The terminals of a <penstroke> require some special rules.
+The terminals of a `<penstroke>` require some special rules.
 */
 }
 
@@ -178,14 +178,14 @@ left, right {
  * **outLength**: Number, distance of outgoing off-curve-point to its on-curve-point.
  * **inDir**: Number, angle in radians, direction from on-curve-point to incoming off-curve-point.
  * **outDir**: Number, angle in radians, direction from on-curve-point to outgoing off-curve-point.
- * **inDirIntrinsic**, Number, angle in radians, offset from the parent <center> point inDir property.
- * **outDirIntrinsic**, Number, angle in radians, offset from the parent <center> point outDir property.
- * **onLength**, Number, distance of <center> on-curve-point to <left/right> on-curve-point.
- * **onDir**, Number, angle in radians, direction from <center> on-curve-point to <left/right> on-curve-point.
+ * **inDirIntrinsic**, Number, angle in radians, offset from the parent `<center>` point inDir property.
+ * **outDirIntrinsic**, Number, angle in radians, offset from the parent `<center>` point outDir property.
+ * **onLength**, Number, distance of `<center>` on-curve-point to `<left/right>` on-curve-point.
+ * **onDir**, Number, angle in radians, direction from `<center>` on-curve-point to `<left/right>` on-curve-point.
  * **inTension**: Number, Hobby-spline tension, distance of incoming off-curve-point to its on-curve-point.
  * **outTension**: Number, Hobby-spline tension, distance of outgoing off-curve-point to its on-curve-point.
- * **pointBefore**: MOM-Node, reference to the parent-<center>-points previous sibling <left/right> child.
- * **pointAfter**: MOM-Node, reference to the parent-<center>-points following sibling <left/right> child.
+ * **pointBefore**: MOM-Node, reference to the parent-`<center>`-points previous sibling `<left/right>` child.
+ * **pointAfter**: MOM-Node, reference to the parent-`<center>`-points following sibling `<left/right>` child.
 */
     pointBefore: parent:pointBefore[this:type];
     pointAfter: parent:pointAfter[this:type];
@@ -207,7 +207,7 @@ left {
 /*#md
 ## Opening Terminal
 
-Drawn from left to right using both 'in' properties.
+Drawn from `<left>` to `<right>` using both 'in' properties.
 */
 center:i(0)>left {
     in: tension2controlOut on (inDir + deg 180) inTension parent:right:inDir parent:right:on;
@@ -220,7 +220,7 @@ center:i(0)>right {
 /*#md
 ## Closing Terminal
 
-Drawn from right to left using both 'out' values.
+Drawn from `<right>` to `<left>` using both 'out' values.
 */
 center:i(-1)>right {
     out: tension2controlOut on outDir outTension (parent:left:outDir + deg 180) parent:left:on;
