@@ -14,13 +14,23 @@ contour > p {
 {{/n}}
 }
 
-point > * {
+center {
+    indexPenstroke: parent:index;
+{{#n}}
+    base{{.}}: parent:parent:base{{.}}
+        :children[indexPenstroke]
+        :children[index]
+        ;
+{{/n}}
+}
+
+center > * {
     indexPenstroke: parent:parent:index;
-    indexPoint: parent:index;
+    indexCenter: parent:index;
 {{#n}}
     base{{.}}: parent:parent:parent:base{{.}}
         :children[indexPenstroke]
-        :children[indexPoint]
+        :children[indexCenter]
         :children[index]
         ;
 {{/n}}
@@ -40,15 +50,15 @@ point > * {
 }
 
 glyph {
-    advanceWidth: 0{{#n}}
-        + base{{.}}:advanceWidth * _p{{.}}{{/n}};
-    advanceHeight: 0{{#n}}
-        + base{{.}}:advanceHeight * _p{{.}}{{/n}};
+    width: 0{{#n}}
+        + base{{.}}:width * _p{{.}}{{/n}};
+    height: 0{{#n}}
+        + base{{.}}:height * _p{{.}}{{/n}};
 }
 
-point > left,
-point > right,
-point > center,
+center,
+center > left,
+center > right,
 contour > p {
     on: Vector 0 0{{#n}}
         + base{{.}}:on * _p{{.}}{{/n}};

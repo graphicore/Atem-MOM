@@ -1,4 +1,4 @@
-@import 'generated/centreline-skeleton-to-symmetric-outline.cps';
+@import 'lib/MOM/primary.cps';
 
 glyph {
 {{#n}}
@@ -16,13 +16,23 @@ contour > p {
 {{/n}}
 }
 
-point > * {
+center {
+    indexPenstroke: parent:index;
+{{#n}}
+    base{{.}}: parent:parent:base{{.}}
+        :children[indexPenstroke]
+        :children[index]
+        ;
+{{/n}}
+}
+
+center > * {
     indexPenstroke: parent:parent:index;
-    indexPoint: parent:index;
+    indexCenter: parent:index;
 {{#n}}
     base{{.}}: parent:parent:parent:base{{.}}
         :children[indexPenstroke]
-        :children[indexPoint]
+        :children[indexCenter]
         :children[index]
         ;
 {{/n}}
@@ -42,13 +52,13 @@ point > * {
 }
 
 glyph {
-    advanceWidth: 0{{#n}}
-        + base{{.}}:advanceWidth * _p{{.}}{{/n}};
-    advanceHeight: 0{{#n}}
-        + base{{.}}:advanceHeight * _p{{.}}{{/n}};
+    width: 0{{#n}}
+        + base{{.}}:width * _p{{.}}{{/n}};
+    height: 0{{#n}}
+        + base{{.}}:height * _p{{.}}{{/n}};
 }
 
-point > * {
+center, center > * {
     inLength: 0{{#n}}
         + base{{.}}:inLength * _p{{.}}{{/n}};
     outLength: 0{{#n}}
@@ -109,14 +119,14 @@ contour > p {
         + (min 10000 base{{.}}:outTension) * _p{{.}}{{/n}};
 }
 
-point > left, point > right {
+center > left, center > right {
     onDir: 0{{#n}}
         + (normalizeAngle base{{.}}:onDir) * _p{{.}}{{/n}};
     onLength: 0{{#n}}
         + base{{.}}:onLength * _p{{.}}{{/n}};
 }
 
-point > center {
+center {
     on: Vector 0 0{{#n}}
         + base{{.}}:on * _p{{.}}{{/n}};
     in: Vector 0 0{{#n}}
@@ -126,14 +136,14 @@ point > center {
 }
 
 /* terminals overide of skeleton2outline */
-point:i(0) > left,
-point:i(0) > right {
+center:i(0) > left,
+center:i(0) > right {
     inDir: 0{{#n}}
         + (normalizeAngle base{{.}}:inDir) * _p{{.}}{{/n}};
 }
 
-point:i(-1) > right,
-point:i(-1) > left {
+center:i(-1) > right,
+center:i(-1) > left {
     outDir: 0{{#n}}
         + (normalizeAngle base{{.}}:outDir) * _p{{.}}{{/n}};
 }
