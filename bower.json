@@ -24,6 +24,7 @@
     "tests"
   ],
   "dependencies": {
+    "requirejs-text": ">=2.0.14",
     "Atem-Errors": "graphicore/Atem-Errors",
     "Atem-Math-Tools": "graphicore/Atem-Math-Tools",
     "Atem-CPS": "graphicore/Atem-CPS",
