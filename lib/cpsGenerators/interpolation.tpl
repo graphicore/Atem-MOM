@@ -68,6 +68,18 @@ contour > p {
         + base{{.}}:out * _p{{.}}{{/n}};
 }
 
+component {
+    baseGlyphName: baseNode:baseGlyphName;
+    /* FIXME: there's currently no way of interpolating transformation matrixes
+see: https://github.com/graphicore/Atem-Property-Language/issues/1
+    */
+    transformation: baseNode:transformation;
+{{#n}}
+    base{{.}}: parent:base{{.}}
+        :children[index]
+        ;
+{{/n}}
+}
 
 master * {
 {{#n}}
