@@ -114,19 +114,23 @@ center, center > * {
         + (min 1000 base{{.}}:inTension * _p{{.}}){{/n}};
     outTension: 0{{#n}}
         + (min 1000 base{{.}}:outTension * _p{{.}}){{/n}};
-    inDirIntrinsic: 0{{#n}}
-        + (normalizeAngle base{{.}}:inDirIntrinsic) * _p{{.}}{{/n}};
-    outDirIntrinsic: 0{{#n}}
-        + (normalizeAngle base{{.}}:outDirIntrinsic) * _p{{.}}{{/n}};
+    inDirIntrinsic: ((Vector 0 0){{#n}}
+        + (Polar 1 base{{.}}:inDirIntrinsic) * _p{{.}}{{/n}}
+        ):angle;
+    outDirIntrinsic: ((Vector 0 0){{#n}}
+        + (Polar 1 base{{.}}:outDirIntrinsic) * _p{{.}}{{/n}}
+        ):angle;
 }
 
 contour > p {
     on: Vector 0 0{{#n}}
         + base{{.}}:on * _p{{.}}{{/n}};
-    inDir: 0{{#n}}
-        + (normalizeAngle base{{.}}:inDir) * _p{{.}}{{/n}};
-    outDir: 0{{#n}}
-        + (normalizeAngle base{{.}}:outDir) * _p{{.}}{{/n}};
+    inDir: ((Vector 0 0){{#n}}
+        + (Polar 1  base{{.}}:inDir) * _p{{.}}{{/n}}
+        ):angle;
+    outDir: ((Vector 0 0){{#n}}
+        + (Polar 1  base{{.}}:outDir) * _p{{.}}{{/n}}
+        ):angle;
     inTension: 0{{#n}}
         + (min 10000 base{{.}}:inTension) * _p{{.}}{{/n}};
     outTension: 0{{#n}}
@@ -134,8 +138,9 @@ contour > p {
 }
 
 center > left, center > right {
-    onDir: 0{{#n}}
-        + (normalizeAngle base{{.}}:onDir) * _p{{.}}{{/n}};
+    onDir: ((Vector 0 0){{#n}}
+        + (Polar 1 base{{.}}:onDir) * _p{{.}}{{/n}}
+        ):angle;
     onLength: 0{{#n}}
         + base{{.}}:onLength * _p{{.}}{{/n}};
 }
@@ -152,14 +157,16 @@ center {
 /* terminals overide of skeleton2outline */
 center:i(0) > left,
 center:i(0) > right {
-    inDir: 0{{#n}}
-        + (normalizeAngle base{{.}}:inDir) * _p{{.}}{{/n}};
+    inDir: ((Vector 0 0){{#n}}
+        + (Polar 1  base{{.}}:inDir) * _p{{.}}{{/n}}
+        ):angle;
 }
 
 center:i(-1) > right,
 center:i(-1) > left {
-    outDir: 0{{#n}}
-        + (normalizeAngle base{{.}}:outDir) * _p{{.}}{{/n}};
+    outDir: ((Vector 0 0){{#n}}
+        + (Polar 1  base{{.}}:outDir) * _p{{.}}{{/n}}
+        ):angle;
 }
 
 master * {
